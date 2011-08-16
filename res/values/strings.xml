@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">v.g.</string>
     <string name="preference_key_name">PREFERENCE_KEY_VG</string>
+    <string name="menu_setting">Setting</string>
 </resources>

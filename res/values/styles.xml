@@ -61,6 +61,7 @@
     <style name="bugcloud" parent="@android:style/Theme.Light">
     	<item name="android:textViewStyle">@style/BugcloudTextAppearance</item> 
     	<item name="android:windowTitleStyle">@style/BugcloudTitleAppearance</item>
+    	<item name="android:windowBackground">@drawable/background_slash</item>
     	<item name="android:buttonStyle">@style/BugcloudButtonAppearance</item> 
 	    <item name="android:windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
 	    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
@@ -104,6 +105,14 @@
         <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
         <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+    </style>
+    
+    <style name="CustomSeekBar" parent="android:Widget.SeekBar">
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:maxHeight">8dip</item>
+        <item name="android:thumb">@drawable/btn_circle</item>
+        <item name="android:progressDrawable">@drawable/custom_seekbar</item>
     </style>
 
 </resources>
