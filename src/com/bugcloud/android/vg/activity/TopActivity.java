@@ -21,6 +21,7 @@ public class TopActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(new CameraView(this));
+        showToast(getString(R.string.message_intro));
     }
     
     @Override
