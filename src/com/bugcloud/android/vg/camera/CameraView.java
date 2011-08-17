@@ -10,8 +10,8 @@ import java.util.Date;
 
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.activity.BaseActivity;
-import com.bugcloud.android.vg.activity.TopActivity;
 import com.bugcloud.android.vg.share.Common;
+import com.bugcloud.android.vg.share.Constants;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -26,8 +26,11 @@ import android.view.MotionEvent;
 
 public class CameraView extends CameraViewBase {
 	private static final String TAG = "Vg::CameraView";
-	private static final int MIN_COLOR_VALUE = 30;
-	private static final int MAX_COLOR_VALUE = 200;
+	private int mRedRange;
+	private int mGreenRange;
+	private int mBlueRange;
+	private int mMinColorValue;
+	private int mMaxColorValue;
 
 	private Context mContext;
 	private byte[] mBitmapBytes;
@@ -35,6 +38,11 @@ public class CameraView extends CameraViewBase {
 	public CameraView(Context context) {
 		super(context);
 		mContext = context;
+		mRedRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
+		mGreenRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
+		mBlueRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
+		mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
+		mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
 	}
 
 	@Override
@@ -57,9 +65,9 @@ public class CameraView extends CameraViewBase {
                 g = g < 0 ? 0 : (g > 255 ? 255 : g);
                 b = b < 0 ? 0 : (b > 255 ? 255 : b);
                 
-                r = (r > (255/2-TopActivity.redRange) && r < (255/2+TopActivity.redRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : r;
-                g = (g > (255/2-TopActivity.greenRange) && g < (255/2+TopActivity.greenRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : g;
-                b = (b > (255/2-TopActivity.blueRange) && b < (255/2+TopActivity.blueRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : b;
+                r = (r > (255/2-mRedRange) && r < (255/2+mRedRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : r;
+                g = (g > (255/2-mGreenRange) && g < (255/2+mGreenRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : g;
+                b = (b > (255/2-mBlueRange) && b < (255/2+mBlueRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : b;
 
                 rgba[i * getFrameWidth() + j] = 0xff000000 + (b << 16) + (g << 8) + r;
             }

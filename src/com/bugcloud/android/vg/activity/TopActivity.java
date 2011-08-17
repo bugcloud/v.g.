@@ -2,7 +2,6 @@ package com.bugcloud.android.vg.activity;
 
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.camera.CameraView;
-import com.bugcloud.android.vg.share.Constants;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +11,6 @@ import android.view.MenuItem;
 import android.view.Window;
 
 public class TopActivity extends BaseActivity {
-	public static int redRange;
-	public static int greenRange;
-	public static int blueRange;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,10 +23,6 @@ public class TopActivity extends BaseActivity {
     @Override
 	public void onStart() {
 		super.onStart();
-		
-		redRange = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
-        greenRange = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
-        blueRange = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
     }
     
  // Add settings to menu

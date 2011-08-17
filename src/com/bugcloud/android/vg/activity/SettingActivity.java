@@ -14,10 +14,14 @@ public class SettingActivity extends BaseActivity {
 	private SeekBar seekBarRed;
 	private SeekBar seekBarGreen;
 	private SeekBar seekBarBlue;
+	private SeekBar seekBarMax;
+	private SeekBar seekBarMin;
 	
 	private int mSeekBarValueRed;
 	private int mSeekBarValueGreen;
 	private int mSeekBarValueBlue;
+	private int mSeekBarValueMax;
+	private int mSeekBarValueMin;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,17 +32,25 @@ public class SettingActivity extends BaseActivity {
         seekBarRed = (SeekBar) findViewById(R.id.seekBarRangeRed);
         seekBarGreen = (SeekBar) findViewById(R.id.seekBarRangeGreen);
         seekBarBlue = (SeekBar) findViewById(R.id.seekBarRangeBlue);
+        seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
+        seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
         
         mSeekBarValueRed = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
         mSeekBarValueGreen = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
         mSeekBarValueBlue = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
+        mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
+        mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         
         seekBarRed.setMax(MAX_SEEKBAR_VALUE);
         seekBarGreen.setMax(MAX_SEEKBAR_VALUE);
         seekBarBlue.setMax(MAX_SEEKBAR_VALUE);
+        seekBarMax.setMax(255);
+        seekBarMin.setMax(255);
         seekBarRed.setProgress(mSeekBarValueRed);
         seekBarGreen.setProgress(mSeekBarValueGreen);
         seekBarBlue.setProgress(mSeekBarValueBlue);
+        seekBarMax.setProgress(mSeekBarValueMax);
+        seekBarMin.setProgress(mSeekBarValueMin);
         
         setSeekBarListeners();
         
@@ -50,6 +62,8 @@ public class SettingActivity extends BaseActivity {
 				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED, mSeekBarValueRed);
 				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN, mSeekBarValueGreen);
 				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE, mSeekBarValueBlue);
+				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
+				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
 				backToRoot();
 			}
 		});
@@ -103,6 +117,48 @@ public class SettingActivity extends BaseActivity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				mSeekBarValueBlue = progress;
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
+		
+		seekBarMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				mSeekBarValueMax = progress;
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
+		
+		seekBarMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				mSeekBarValueMin = progress;
 			}
 
 			@Override
