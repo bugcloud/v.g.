@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 
 public class CameraView extends CameraViewBase {
 	private static final String TAG = "Vg::CameraView";
+	private static final int MIN_COLOR_VALUE = 30;
+	private static final int MAX_COLOR_VALUE = 200;
 
 	private Context mContext;
 	private byte[] mBitmapBytes;
@@ -51,9 +53,9 @@ public class CameraView extends CameraViewBase {
                 g = g < 0 ? 0 : (g > 255 ? 255 : g);
                 b = b < 0 ? 0 : (b > 255 ? 255 : b);
                 
-                r = (r > (255/2-TopActivity.redRange) && r < (255/2+TopActivity.redRange))? Common.getRandom(0, 255) : r;
-                g = (g > (255/2-TopActivity.greenRange) && g < (255/2+TopActivity.greenRange))? Common.getRandom(0, 255) : g;
-                b = (b > (255/2-TopActivity.blueRange) && b < (255/2+TopActivity.blueRange))? Common.getRandom(0, 255) : b;
+                r = (r > (255/2-TopActivity.redRange) && r < (255/2+TopActivity.redRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : r;
+                g = (g > (255/2-TopActivity.greenRange) && g < (255/2+TopActivity.greenRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : g;
+                b = (b > (255/2-TopActivity.blueRange) && b < (255/2+TopActivity.blueRange))? Common.getRandom(MIN_COLOR_VALUE, MAX_COLOR_VALUE) : b;
 
                 rgba[i * getFrameWidth() + j] = 0xff000000 + (b << 16) + (g << 8) + r;
             }

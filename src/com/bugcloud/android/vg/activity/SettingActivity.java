@@ -10,6 +10,7 @@ import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.share.Constants;
 
 public class SettingActivity extends BaseActivity {
+	private static final int MAX_SEEKBAR_VALUE = 125;
 	private SeekBar seekBarRed;
 	private SeekBar seekBarGreen;
 	private SeekBar seekBarBlue;
@@ -32,9 +33,9 @@ public class SettingActivity extends BaseActivity {
         mSeekBarValueGreen = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
         mSeekBarValueBlue = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
         
-        seekBarRed.setMax(255);
-        seekBarGreen.setMax(255);
-        seekBarBlue.setMax(255);
+        seekBarRed.setMax(MAX_SEEKBAR_VALUE);
+        seekBarGreen.setMax(MAX_SEEKBAR_VALUE);
+        seekBarBlue.setMax(MAX_SEEKBAR_VALUE);
         seekBarRed.setProgress(mSeekBarValueRed);
         seekBarGreen.setProgress(mSeekBarValueGreen);
         seekBarBlue.setProgress(mSeekBarValueBlue);
