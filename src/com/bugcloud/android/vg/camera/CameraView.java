@@ -13,10 +13,14 @@ import com.bugcloud.android.vg.activity.BaseActivity;
 import com.bugcloud.android.vg.activity.TopActivity;
 import com.bugcloud.android.vg.share.Common;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -86,8 +90,9 @@ public class CameraView extends CameraViewBase {
 		File dir = new File(path);
 		dir.mkdir();
 		Date today = new Date();
-		SimpleDateFormat sdFormat= new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss_SSS");
-		String fileName = sdFormat.format(today) + ".jpg";
+		SimpleDateFormat sdFormat= new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
+		String name = sdFormat.format(today);
+		String fileName = name + ".jpg";
 		File file = new File(path, fileName);
 		FileOutputStream fos = null;
 		try {
@@ -103,6 +108,19 @@ public class CameraView extends CameraViewBase {
 			Log.e(TAG, e.getMessage());
 			failedMessage();
 		}
+		
+		//insert into MediaStore
+		long now = System.currentTimeMillis();
+		ContentResolver cr = mContext.getContentResolver();
+		ContentValues values = new ContentValues(7);
+		values.put(Images.Media.TITLE, name);
+		values.put(Images.Media.DISPLAY_NAME, name);
+		values.put(Images.Media.DATE_TAKEN, now);
+		values.put(Images.Media.DATE_MODIFIED, now/1000);
+		values.put(Images.Media.MIME_TYPE, "image/jpeg");
+		values.put(Images.Media.DATA, file.getPath());
+		values.put(Images.Media.SIZE, file.length());
+		cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 	}
 	
 	private void failedMessage() {

@@ -3,7 +3,7 @@
     <string name="app_name">v.g.</string>
     <string name="preference_key_name">PREFERENCE_KEY_VG</string>
     <string name="menu_setting">Setting</string>
-    <string name="message_intro">Touch anywhere to save display as a image.</string>
+    <string name="message_intro">Touch anywhere to save your display as a image.</string>
     <string name="message_picture_saved">Saved.</string>
     <string name="message_picture_not_saved">Failed to save.</string>
 </resources>
