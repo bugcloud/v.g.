@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,6 +48,17 @@ public class CameraView extends CameraViewBase {
 
 	@Override
 	protected Bitmap processFrame(byte[] data) {
+		
+//		try {
+//			String xx = new String(data, "UTF-8");
+//			String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
+//			data = xx.replaceAll("reg", String.valueOf(Common.getRandom(0, 9))).getBytes("UTF-8");
+//			data = xx.getBytes("UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 		int frameSize = getFrameWidth() * getFrameHeight();
         int[] rgba = new int[frameSize];
 
