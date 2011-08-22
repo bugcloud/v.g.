@@ -26,40 +26,44 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class CameraView extends CameraViewBase {
-	private static final String TAG = "Vg::CameraView";
-	private int mRedRange;
-	private int mGreenRange;
-	private int mBlueRange;
-	private int mMinColorValue;
-	private int mMaxColorValue;
+    private static final String TAG = "Vg::CameraView";
+    private int mRedRange;
+    private int mGreenRange;
+    private int mBlueRange;
+    private int mMinColorValue;
+    private int mMaxColorValue;
+    private boolean mNeedMoreGlitch;
 
-	private Context mContext;
-	private byte[] mBitmapBytes;
-	
-	public CameraView(Context context) {
-		super(context);
-		mContext = context;
-		mRedRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
-		mGreenRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
-		mBlueRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
-		mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
-		mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
-	}
+    private Context mContext;
+    private byte[] mBitmapBytes;
+    
+    public CameraView(Context context) {
+        super(context);
+        mContext = context;
+        mRedRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
+        mGreenRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
+        mBlueRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
+        mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
+        mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
+        mNeedMoreGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
+    }
 
-	@Override
-	protected Bitmap processFrame(byte[] data) {
-		
-//		try {
-//			String xx = new String(data, "UTF-8");
-//			String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
-//			data = xx.replaceAll("reg", String.valueOf(Common.getRandom(0, 9))).getBytes("UTF-8");
-//			data = xx.getBytes("UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		int frameSize = getFrameWidth() * getFrameHeight();
+    @Override
+    protected Bitmap processFrame(byte[] data) {
+        if (mNeedMoreGlitch) {
+            try {
+                String xx = new String(data, "UTF-8");
+                //String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
+                //data = xx.replaceAll("reg", String.valueOf(Common.getRandom(0, 9))).getBytes("UTF-8");
+                data = xx.getBytes("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        
+        int frameSize = getFrameWidth() * getFrameHeight();
         int[] rgba = new int[frameSize];
 
         for (int i = 0; i < getFrameHeight(); i++)
@@ -77,9 +81,11 @@ public class CameraView extends CameraViewBase {
                 g = g < 0 ? 0 : (g > 255 ? 255 : g);
                 b = b < 0 ? 0 : (b > 255 ? 255 : b);
                 
-                r = (r > (255/2-mRedRange) && r < (255/2+mRedRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : r;
-                g = (g > (255/2-mGreenRange) && g < (255/2+mGreenRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : g;
-                b = (b > (255/2-mBlueRange) && b < (255/2+mBlueRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : b;
+                if (!mNeedMoreGlitch) {
+                    r = (r > (255/2-mRedRange) && r < (255/2+mRedRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : r;
+                    g = (g > (255/2-mGreenRange) && g < (255/2+mGreenRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : g;
+                    b = (b > (255/2-mBlueRange) && b < (255/2+mBlueRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : b;
+                }
 
                 rgba[i * getFrameWidth() + j] = 0xff000000 + (b << 16) + (g << 8) + r;
             }
@@ -90,60 +96,60 @@ public class CameraView extends CameraViewBase {
         bmp.compress(CompressFormat.JPEG, 100, bos);
         mBitmapBytes = bos.toByteArray();
         return bmp;
-	}
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent me) {
-		if(me.getAction() == MotionEvent.ACTION_DOWN) {
-			if (mBitmapBytes != null) {
-				saveBitmapAsJPGImage(mBitmapBytes);
-				((BaseActivity)mContext).showToast(mContext.getString(R.string.message_picture_saved));
-			} else {
-				failedMessage();
-			}
-		}
-		return true;
-	}
-	
-	private void saveBitmapAsJPGImage(byte[] bytes) {
-		String path = Environment.getExternalStorageDirectory().toString() + "/" + mContext.getPackageName();
-		File dir = new File(path);
-		dir.mkdir();
-		Date today = new Date();
-		SimpleDateFormat sdFormat= new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
-		String name = sdFormat.format(today);
-		String fileName = name + ".jpg";
-		File file = new File(path, fileName);
-		FileOutputStream fos = null;
-		try {
-			 if (file.createNewFile()) {
-				 fos = new FileOutputStream(file);
-				 fos.write(bytes);
-				 fos.close();
-			 }
-		} catch (FileNotFoundException e) {
-			Log.e(TAG, e.getMessage());
-			failedMessage();
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage());
-			failedMessage();
-		}
-		
-		//insert into MediaStore
-		long now = System.currentTimeMillis();
-		ContentResolver cr = mContext.getContentResolver();
-		ContentValues values = new ContentValues(7);
-		values.put(Images.Media.TITLE, name);
-		values.put(Images.Media.DISPLAY_NAME, name);
-		values.put(Images.Media.DATE_TAKEN, now);
-		values.put(Images.Media.DATE_MODIFIED, now/1000);
-		values.put(Images.Media.MIME_TYPE, "image/jpeg");
-		values.put(Images.Media.DATA, file.getPath());
-		values.put(Images.Media.SIZE, file.length());
-		cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-	}
-	
-	private void failedMessage() {
-		((BaseActivity)mContext).showToast(mContext.getString(R.string.message_picture_not_saved));
-	}
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent me) {
+        if(me.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mBitmapBytes != null) {
+                saveBitmapAsJPGImage(mBitmapBytes);
+                ((BaseActivity)mContext).showToast(mContext.getString(R.string.message_picture_saved));
+            } else {
+                failedMessage();
+            }
+        }
+        return true;
+    }
+    
+    private void saveBitmapAsJPGImage(byte[] bytes) {
+        String path = Environment.getExternalStorageDirectory().toString() + "/" + mContext.getPackageName();
+        File dir = new File(path);
+        dir.mkdir();
+        Date today = new Date();
+        SimpleDateFormat sdFormat= new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
+        String name = sdFormat.format(today);
+        String fileName = name + ".jpg";
+        File file = new File(path, fileName);
+        FileOutputStream fos = null;
+        try {
+             if (file.createNewFile()) {
+                 fos = new FileOutputStream(file);
+                 fos.write(bytes);
+                 fos.close();
+             }
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+            failedMessage();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            failedMessage();
+        }
+        
+        //insert into MediaStore
+        long now = System.currentTimeMillis();
+        ContentResolver cr = mContext.getContentResolver();
+        ContentValues values = new ContentValues(7);
+        values.put(Images.Media.TITLE, name);
+        values.put(Images.Media.DISPLAY_NAME, name);
+        values.put(Images.Media.DATE_TAKEN, now);
+        values.put(Images.Media.DATE_MODIFIED, now/1000);
+        values.put(Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(Images.Media.DATA, file.getPath());
+        values.put(Images.Media.SIZE, file.length());
+        cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
+    
+    private void failedMessage() {
+        ((BaseActivity)mContext).showToast(mContext.getString(R.string.message_picture_not_saved));
+    }
 }

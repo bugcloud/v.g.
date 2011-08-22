@@ -65,7 +65,14 @@
     	<item name="android:buttonStyle">@style/BugcloudButtonAppearance</item> 
 	    <item name="android:windowTitleBackgroundStyle">@style/WindowTitleBackground</item>
 	    <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
-	</style>	
+	</style>
+	
+	<style name="bugcloudNoTitle" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:textViewStyle">@style/BugcloudTextAppearance</item> 
+        <item name="android:windowBackground">@drawable/background_slash</item>
+        <item name="android:buttonStyle">@style/BugcloudButtonAppearance</item> 
+        <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+    </style>	
     
     <style name="BugcloudTextAppearance" parent="@android:style/TextAppearance">
     	<item name="android:textColor">#FF464646</item>

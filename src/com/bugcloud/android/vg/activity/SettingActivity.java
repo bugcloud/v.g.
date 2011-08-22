@@ -3,6 +3,7 @@ package com.bugcloud.android.vg.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
@@ -16,12 +17,14 @@ public class SettingActivity extends BaseActivity {
 	private SeekBar seekBarBlue;
 	private SeekBar seekBarMax;
 	private SeekBar seekBarMin;
+	private CheckBox checkboxNeedMoreGlitch;
 	
 	private int mSeekBarValueRed;
 	private int mSeekBarValueGreen;
 	private int mSeekBarValueBlue;
 	private int mSeekBarValueMax;
 	private int mSeekBarValueMin;
+	private boolean mNeedMoreGlitch;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,12 +37,14 @@ public class SettingActivity extends BaseActivity {
         seekBarBlue = (SeekBar) findViewById(R.id.seekBarRangeBlue);
         seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
         seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
+        checkboxNeedMoreGlitch = (CheckBox) findViewById(R.id.checkboxNeedMoreGlitch);
         
         mSeekBarValueRed = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
         mSeekBarValueGreen = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
         mSeekBarValueBlue = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
         mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
+        mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
         
         seekBarRed.setMax(MAX_SEEKBAR_VALUE);
         seekBarGreen.setMax(MAX_SEEKBAR_VALUE);
@@ -51,6 +56,7 @@ public class SettingActivity extends BaseActivity {
         seekBarBlue.setProgress(mSeekBarValueBlue);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
+        checkboxNeedMoreGlitch.setChecked(mNeedMoreGlitch);
         
         setSeekBarListeners();
         
@@ -64,6 +70,7 @@ public class SettingActivity extends BaseActivity {
 				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE, mSeekBarValueBlue);
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
+				putBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH, checkboxNeedMoreGlitch.isChecked());
 				backToRoot();
 			}
 		});
