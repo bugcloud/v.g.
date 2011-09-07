@@ -32,9 +32,7 @@ import android.view.SurfaceHolder;
 
 public class CameraView extends CameraViewBase {
     private static final String TAG = "Vg::CameraView";
-    private int mRedRange;
-    private int mGreenRange;
-    private int mBlueRange;
+    private String mCharset;
     private int mMinColorValue;
     private int mMaxColorValue;
     private boolean mNeedMoreGlitch;
@@ -50,9 +48,8 @@ public class CameraView extends CameraViewBase {
     public CameraView(Context context) {
         super(context);
         mContext = context;
-        mRedRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
-        mGreenRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
-        mBlueRange = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
+        mCharset = ((BaseActivity)mContext).getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
+        if (mCharset == null) mCharset = "ISO-8859-1";
         mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         mNeedMoreGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
@@ -76,10 +73,10 @@ public class CameraView extends CameraViewBase {
     protected Bitmap processFrame(byte[] data) {
         if (mNeedMoreGlitch) {
             try {
-                String xx = new String(data, "UTF-8");
+                String xx = new String(data, mCharset);
                 //String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
                 //data = xx.replaceAll("reg", String.valueOf(Common.getRandom(0, 9))).getBytes("UTF-8");
-                data = xx.getBytes("UTF-8");
+                data = xx.getBytes(mCharset);
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

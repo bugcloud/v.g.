@@ -6,22 +6,17 @@ import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.share.Constants;
 
 public class SettingActivity extends BaseActivity {
-	private static final int MAX_SEEKBAR_VALUE = 125;
-	private SeekBar seekBarRed;
-	private SeekBar seekBarGreen;
-	private SeekBar seekBarBlue;
 	private SeekBar seekBarMax;
 	private SeekBar seekBarMin;
+	private Spinner mSpinner;
 	private CheckBox checkboxNeedMoreGlitch;
 	
-	private int mSeekBarValueRed;
-	private int mSeekBarValueGreen;
-	private int mSeekBarValueBlue;
 	private int mSeekBarValueMax;
 	private int mSeekBarValueMin;
 	private boolean mNeedMoreGlitch;
@@ -32,31 +27,30 @@ public class SettingActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.setting);
         
-        seekBarRed = (SeekBar) findViewById(R.id.seekBarRangeRed);
-        seekBarGreen = (SeekBar) findViewById(R.id.seekBarRangeGreen);
-        seekBarBlue = (SeekBar) findViewById(R.id.seekBarRangeBlue);
         seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
         seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
+        mSpinner = (Spinner) findViewById(R.id.spinnerCharset);
         checkboxNeedMoreGlitch = (CheckBox) findViewById(R.id.checkboxNeedMoreGlitch);
         
-        mSeekBarValueRed = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED);
-        mSeekBarValueGreen = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN);
-        mSeekBarValueBlue = getIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE);
         mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
         
-        seekBarRed.setMax(MAX_SEEKBAR_VALUE);
-        seekBarGreen.setMax(MAX_SEEKBAR_VALUE);
-        seekBarBlue.setMax(MAX_SEEKBAR_VALUE);
         seekBarMax.setMax(255);
         seekBarMin.setMax(255);
-        seekBarRed.setProgress(mSeekBarValueRed);
-        seekBarGreen.setProgress(mSeekBarValueGreen);
-        seekBarBlue.setProgress(mSeekBarValueBlue);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
         checkboxNeedMoreGlitch.setChecked(mNeedMoreGlitch);
+        
+        String charset = getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
+        if (charset == null) charset = "ISO-8859-1";
+        String[] charsets = getResources().getStringArray(R.array.charsets);
+        int i = 0;
+        for (String c : charsets) {
+        	if (c.equals(charset)) break;
+        	i++;
+        }
+        mSpinner.setSelection(i);
         
         setSeekBarListeners();
         
@@ -65,9 +59,7 @@ public class SettingActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View v) {
-				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_RED, mSeekBarValueRed);
-				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_GREEN, mSeekBarValueGreen);
-				putIntSharedPreferences(Constants.KEY_NAME_RANGE_OF_BLUE, mSeekBarValueBlue);
+				putStringSharedPreferences(Constants.KEY_NAME_CHARSET, mSpinner.getSelectedItem().toString());
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
 				putBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH, checkboxNeedMoreGlitch.isChecked());
@@ -77,69 +69,6 @@ public class SettingActivity extends BaseActivity {
     }
 	
 	private void setSeekBarListeners() {
-		seekBarRed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				mSeekBarValueRed = progress;
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
-        });
-		
-		seekBarGreen.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				mSeekBarValueGreen = progress;
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
-        });
-		
-		seekBarBlue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				mSeekBarValueBlue = progress;
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
-        });
-		
 		seekBarMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
 			@Override
