@@ -6,7 +6,7 @@
     <string name="setting_text_max">MAX</string>
     <string name="setting_text_min">MIN</string>
     <string name="setting_text_glitch_mode">GLITCH MODE</string>
-    <string name="setting_checkbox_need_more_glitch">I NEED MORE GLITCH</string>
+    <string name="setting_checkbox_need_glitch">I NEED GLITCH</string>
     <string name="message_intro">Touch anywhere to save your display as a image.</string>
     <string name="message_picture_saved">Saved.</string>
     <string name="message_picture_not_saved">Failed to save.</string>

@@ -35,7 +35,7 @@ public class CameraView extends CameraViewBase {
     private String mCharset;
     private int mMinColorValue;
     private int mMaxColorValue;
-    private boolean mNeedMoreGlitch;
+    private boolean mNeedGlitch;
 
     private Context mContext;
     private byte[] mBitmapBytes;
@@ -52,7 +52,7 @@ public class CameraView extends CameraViewBase {
         if (mCharset == null) mCharset = "ISO-8859-1";
         mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
-        mNeedMoreGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
+        mNeedGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
     }
     
     @Override
@@ -71,7 +71,7 @@ public class CameraView extends CameraViewBase {
     
     @Override
     protected Bitmap processFrame(byte[] data) {
-        if (mNeedMoreGlitch) {
+        if (mNeedGlitch) {
             try {
                 String xx = new String(data, mCharset);
                 //String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
@@ -87,7 +87,7 @@ public class CameraView extends CameraViewBase {
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
 
         if (Utils.matToBitmap(mRgba, bmp)) {
-        	if (!mNeedMoreGlitch) {
+        	if (!mNeedGlitch) {
         		//TODO glitch code
         	}
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

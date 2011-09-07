@@ -15,7 +15,7 @@ public class SettingActivity extends BaseActivity {
 	private SeekBar seekBarMax;
 	private SeekBar seekBarMin;
 	private Spinner mSpinner;
-	private CheckBox checkboxNeedMoreGlitch;
+	private CheckBox checkboxNeedGlitch;
 	
 	private int mSeekBarValueMax;
 	private int mSeekBarValueMin;
@@ -30,17 +30,17 @@ public class SettingActivity extends BaseActivity {
         seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
         seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
         mSpinner = (Spinner) findViewById(R.id.spinnerCharset);
-        checkboxNeedMoreGlitch = (CheckBox) findViewById(R.id.checkboxNeedMoreGlitch);
+        checkboxNeedGlitch = (CheckBox) findViewById(R.id.checkboxNeedGlitch);
         
         mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
-        mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
+        mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
         
         seekBarMax.setMax(255);
         seekBarMin.setMax(255);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
-        checkboxNeedMoreGlitch.setChecked(mNeedMoreGlitch);
+        checkboxNeedGlitch.setChecked(mNeedMoreGlitch);
         
         String charset = getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
         if (charset == null) charset = "ISO-8859-1";
@@ -62,7 +62,7 @@ public class SettingActivity extends BaseActivity {
 				putStringSharedPreferences(Constants.KEY_NAME_CHARSET, mSpinner.getSelectedItem().toString());
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
 				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
-				putBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH, checkboxNeedMoreGlitch.isChecked());
+				putBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH, checkboxNeedGlitch.isChecked());
 				backToRoot();
 			}
 		});
