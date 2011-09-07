@@ -16,6 +16,7 @@ import org.opencv.imgproc.Imgproc;
 
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.activity.BaseActivity;
+import com.bugcloud.android.vg.share.Common;
 import com.bugcloud.android.vg.share.Constants;
 
 import android.content.ContentResolver;
@@ -50,8 +51,8 @@ public class CameraView extends CameraViewBase {
         mContext = context;
         mCharset = ((BaseActivity)mContext).getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
         if (mCharset == null) mCharset = "ISO-8859-1";
-        mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
-        mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
+        mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
+        mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mNeedGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
     }
     
@@ -74,8 +75,9 @@ public class CameraView extends CameraViewBase {
         if (mNeedGlitch) {
             try {
                 String xx = new String(data, mCharset);
-                //String reg = String.valueOf(Common.getRandom(0, 9)) + String.valueOf(Common.getRandom(0, 9));
-                //data = xx.replaceAll("reg", String.valueOf(Common.getRandom(0, 9))).getBytes("UTF-8");
+                if (mMinColorValue < mMaxColorValue) {
+                    xx = xx.replaceAll("[0-9]", String.valueOf(Common.getRandom(mMinColorValue, mMaxColorValue)));
+                }
                 data = xx.getBytes(mCharset);
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
@@ -87,9 +89,6 @@ public class CameraView extends CameraViewBase {
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
 
         if (Utils.matToBitmap(mRgba, bmp)) {
-        	if (!mNeedGlitch) {
-        		//TODO glitch code
-        	}
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bmp.compress(CompressFormat.JPEG, 100, bos);
             mBitmapBytes = bos.toByteArray();

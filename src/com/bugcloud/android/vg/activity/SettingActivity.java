@@ -36,8 +36,8 @@ public class SettingActivity extends BaseActivity {
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
         
-        seekBarMax.setMax(255);
-        seekBarMin.setMax(255);
+        seekBarMax.setMax(9);
+        seekBarMin.setMax(9);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
         checkboxNeedGlitch.setChecked(mNeedMoreGlitch);
