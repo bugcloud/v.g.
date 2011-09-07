@@ -9,9 +9,13 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.activity.BaseActivity;
-import com.bugcloud.android.vg.share.Common;
 import com.bugcloud.android.vg.share.Constants;
 
 import android.content.ContentResolver;
@@ -24,6 +28,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 
 public class CameraView extends CameraViewBase {
     private static final String TAG = "Vg::CameraView";
@@ -37,6 +42,11 @@ public class CameraView extends CameraViewBase {
     private Context mContext;
     private byte[] mBitmapBytes;
     
+    private Mat mYuv;
+    private Mat mRgba;
+    private Mat mGraySubmat;
+    private Mat mIntermediateMat;
+    
     public CameraView(Context context) {
         super(context);
         mContext = context;
@@ -47,7 +57,21 @@ public class CameraView extends CameraViewBase {
         mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         mNeedMoreGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_MORE_GLITCH);
     }
+    
+    @Override
+    public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
+        super.surfaceChanged(_holder, format, width, height);
+        
+        synchronized (this) {
+            // initialize Mats before usage
+            mYuv = new Mat(getFrameHeight() + getFrameHeight() / 2, getFrameWidth(), CvType.CV_8UC1);
+            mGraySubmat = mYuv.submat(0, getFrameHeight(), 0, getFrameWidth());
 
+            mRgba = new Mat();
+            mIntermediateMat = new Mat();
+        }
+    }
+    
     @Override
     protected Bitmap processFrame(byte[] data) {
         if (mNeedMoreGlitch) {
@@ -61,41 +85,44 @@ public class CameraView extends CameraViewBase {
                 e.printStackTrace();
             }
         }
-
-        
-        int frameSize = getFrameWidth() * getFrameHeight();
-        int[] rgba = new int[frameSize];
-
-        for (int i = 0; i < getFrameHeight(); i++)
-            for (int j = 0; j < getFrameWidth(); j++) {
-                int y = (0xff & ((int) data[i * getFrameWidth() + j]));
-                int u = (0xff & ((int) data[frameSize + (i >> 1) * getFrameWidth() + (j & ~1) + 0]));
-                int v = (0xff & ((int) data[frameSize + (i >> 1) * getFrameWidth() + (j & ~1) + 1]));
-                y = y < 16 ? 16 : y;
-
-                int r = Math.round(1.164f * (y - 16) + 1.596f * (v - 128));
-                int g = Math.round(1.164f * (y - 16) - 0.813f * (v - 128) - 0.391f * (u - 128));
-                int b = Math.round(1.164f * (y - 16) + 2.018f * (u - 128));
-
-                r = r < 0 ? 0 : (r > 255 ? 255 : r);
-                g = g < 0 ? 0 : (g > 255 ? 255 : g);
-                b = b < 0 ? 0 : (b > 255 ? 255 : b);
-                
-                if (!mNeedMoreGlitch) {
-                    r = (r > (255/2-mRedRange) && r < (255/2+mRedRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : r;
-                    g = (g > (255/2-mGreenRange) && g < (255/2+mGreenRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : g;
-                    b = (b > (255/2-mBlueRange) && b < (255/2+mBlueRange))? Common.getRandom(mMinColorValue, mMaxColorValue) : b;
-                }
-
-                rgba[i * getFrameWidth() + j] = 0xff000000 + (b << 16) + (g << 8) + r;
-            }
-
+        mYuv.put(0, 0, data);
+        Imgproc.cvtColor(mYuv, mRgba, Imgproc.COLOR_YUV420sp2RGB, 4);
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
-        bmp.setPixels(rgba, 0/* offset */, getFrameWidth() /* stride */, 0, 0, getFrameWidth(), getFrameHeight());
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bmp.compress(CompressFormat.JPEG, 100, bos);
-        mBitmapBytes = bos.toByteArray();
-        return bmp;
+
+        if (Utils.matToBitmap(mRgba, bmp)) {
+        	if (!mNeedMoreGlitch) {
+        		//TODO glitch code
+        	}
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bmp.compress(CompressFormat.JPEG, 100, bos);
+            mBitmapBytes = bos.toByteArray();
+            return bmp;
+        }
+
+        bmp.recycle();
+        return null;
+    }
+    
+    @Override
+    public void run() {
+        super.run();
+
+        synchronized (this) {
+            // Explicitly deallocate Mats
+            if (mYuv != null)
+                mYuv.release();
+            if (mRgba != null)
+                mRgba.release();
+            if (mGraySubmat != null)
+                mGraySubmat.release();
+            if (mIntermediateMat != null)
+                mIntermediateMat.release();
+
+            mYuv = null;
+            mRgba = null;
+            mGraySubmat = null;
+            mIntermediateMat = null;
+        }
     }
     
     @Override
