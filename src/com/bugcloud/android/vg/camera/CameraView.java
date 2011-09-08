@@ -72,23 +72,23 @@ public class CameraView extends CameraViewBase {
     
     @Override
     protected Bitmap processFrame(byte[] data) {
-//        if (mNeedGlitch) {
-//            try {
-//                String xx = new String(data, mCharset);
-//                if (mMinColorValue < mMaxColorValue) {
-//                    xx = xx.replaceAll("[0-9]", String.valueOf(Common.getRandom(mMinColorValue, mMaxColorValue)));
-//                }
-//                data = xx.getBytes(mCharset);
-//            } catch (UnsupportedEncodingException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        }
+        if (mNeedGlitch && (mMinColorValue < mMaxColorValue)) {
+            for (int i=0; i<(data.length * 0.5); i++) {
+                data[Common.getRandom(0, data.length-1)] = (byte)Common.getRandom(mMinColorValue, mMaxColorValue);
+            }
+            try {
+                String xx = new String(data, mCharset);
+                data = xx.getBytes(mCharset);
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         mYuv.put(0, 0, data);
         Imgproc.cvtColor(mYuv, mRgba, Imgproc.COLOR_YUV420sp2RGB, 4);
-        if (mNeedGlitch) {
-            FindFeatures(mGraySubmat.getNativeObjAddr(), mRgba.getNativeObjAddr());
-        }
+//        if (mNeedGlitch) {
+//            FindFeatures(mGraySubmat.getNativeObjAddr(), mRgba.getNativeObjAddr());
+//        }
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
 
         if (Utils.matToBitmap(mRgba, bmp)) {

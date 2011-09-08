@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_com_bugcloud_android_vg_camera_CameraView_FindFeatur
     Mat* pMatRgb=(Mat*)addrRgba;
     vector<KeyPoint> v;
 
-    FastFeatureDetector detector(50);
+    FastFeatureDetector detector(100);
     detector.detect(*pMatGr, v);
     for( size_t i = 0; i < v.size(); i++ )
         circle(*pMatRgb, Point(v[i].pt.x, v[i].pt.y), 10, Scalar(GetRandom(0, 255), GetRandom(0, 255), GetRandom(0, 255),255));
