@@ -72,20 +72,23 @@ public class CameraView extends CameraViewBase {
     
     @Override
     protected Bitmap processFrame(byte[] data) {
-        if (mNeedGlitch) {
-            try {
-                String xx = new String(data, mCharset);
-                if (mMinColorValue < mMaxColorValue) {
-                    xx = xx.replaceAll("[0-9]", String.valueOf(Common.getRandom(mMinColorValue, mMaxColorValue)));
-                }
-                data = xx.getBytes(mCharset);
-            } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+//        if (mNeedGlitch) {
+//            try {
+//                String xx = new String(data, mCharset);
+//                if (mMinColorValue < mMaxColorValue) {
+//                    xx = xx.replaceAll("[0-9]", String.valueOf(Common.getRandom(mMinColorValue, mMaxColorValue)));
+//                }
+//                data = xx.getBytes(mCharset);
+//            } catch (UnsupportedEncodingException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
         mYuv.put(0, 0, data);
         Imgproc.cvtColor(mYuv, mRgba, Imgproc.COLOR_YUV420sp2RGB, 4);
+        if (mNeedGlitch) {
+            FindFeatures(mGraySubmat.getNativeObjAddr(), mRgba.getNativeObjAddr());
+        }
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
 
         if (Utils.matToBitmap(mRgba, bmp)) {
@@ -174,5 +177,11 @@ public class CameraView extends CameraViewBase {
     
     private void failedMessage() {
         ((BaseActivity)mContext).showToast(mContext.getString(R.string.message_picture_not_saved));
+    }
+    
+    public native void FindFeatures(long matAddrGr, long matAddrRgba);
+
+    static {
+        System.loadLibrary("mixed_vg");
     }
 }
