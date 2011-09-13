@@ -25,7 +25,7 @@
                 android:layout_marginBottom="10dip"
                 android:gravity="center">
                 <TextView
-                       android:text="@string/setting_text_glitch_mode"
+                       android:text="@string/setting_text_glitch_level"
                        android:textColor="#1e1e1e"
                        android:textSize="12dip"
                        android:textStyle="bold"
@@ -34,11 +34,11 @@
                        android:layout_weight="1"
                        android:layout_height="fill_parent"/>
 	           <Spinner
-	               android:id="@+id/spinnerCharset"
+	               android:id="@+id/spinnerLevel"
 	               android:layout_width="0dip"
                    android:layout_weight="4"
                    android:layout_height="wrap_content"
-                   android:entries="@array/charsets" />
+                   android:entries="@array/levels" />
             </LinearLayout>
 	        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	            android:orientation="horizontal"

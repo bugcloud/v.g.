@@ -12,16 +12,16 @@ import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.share.Constants;
 
 public class SettingActivity extends BaseActivity {
-	private SeekBar seekBarMax;
-	private SeekBar seekBarMin;
-	private Spinner mSpinner;
-	private CheckBox checkboxNeedGlitch;
-	
-	private int mSeekBarValueMax;
-	private int mSeekBarValueMin;
-	private boolean mNeedMoreGlitch;
-	
-	@Override
+    private SeekBar seekBarMax;
+    private SeekBar seekBarMin;
+    private Spinner mSpinner;
+    private CheckBox checkboxNeedGlitch;
+    
+    private int mSeekBarValueMax;
+    private int mSeekBarValueMin;
+    private boolean mNeedMoreGlitch;
+    
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -29,26 +29,28 @@ public class SettingActivity extends BaseActivity {
         
         seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
         seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
-        mSpinner = (Spinner) findViewById(R.id.spinnerCharset);
+        mSpinner = (Spinner) findViewById(R.id.spinnerLevel);
         checkboxNeedGlitch = (CheckBox) findViewById(R.id.checkboxNeedGlitch);
         
         mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
+        if (mSeekBarValueMax > 9) mSeekBarValueMax = 9;
+        if (mSeekBarValueMin > 9) mSeekBarValueMin = 9;
         mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
         
-        seekBarMax.setMax(255);
-        seekBarMin.setMax(255);
+        seekBarMax.setMax(9);
+        seekBarMin.setMax(9);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
         checkboxNeedGlitch.setChecked(mNeedMoreGlitch);
         
-        String charset = getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
-        if (charset == null) charset = "ISO-8859-1";
-        String[] charsets = getResources().getStringArray(R.array.charsets);
-        int i = 0;
-        for (String c : charsets) {
-        	if (c.equals(charset)) break;
-        	i++;
+        int level = getIntSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL);
+        String[] levels = getResources().getStringArray(R.array.levels);
+        if (level == 0) level = 1;
+        int i=0;
+        for (String l : levels) {
+            if (l.equals(String.valueOf(level))) break;
+            i++;
         }
         mSpinner.setSelection(i);
         
@@ -56,59 +58,60 @@ public class SettingActivity extends BaseActivity {
         
         ImageButton btnSave = (ImageButton) findViewById(R.id.btnSaveSettings);
         btnSave.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				putStringSharedPreferences(Constants.KEY_NAME_CHARSET, mSpinner.getSelectedItem().toString());
-				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
-				putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
-				putBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH, checkboxNeedGlitch.isChecked());
-				backToRoot();
-			}
-		});
+            
+            @Override
+            public void onClick(View v) {
+                putStringSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL, mSpinner.getSelectedItem().toString());
+                putIntSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL, (new Integer(mSpinner.getSelectedItem().toString())).intValue());
+                putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
+                putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
+                putBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH, checkboxNeedGlitch.isChecked());
+                backToRoot();
+            }
+        });
     }
-	
-	private void setSeekBarListeners() {
-		seekBarMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+    
+    private void setSeekBarListeners() {
+        seekBarMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				mSeekBarValueMax = progress;
-			}
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mSeekBarValueMax = progress;
+            }
 
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                
+            }
 
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                
+            }
+            
         });
-		
-		seekBarMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        
+        seekBarMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				mSeekBarValueMin = progress;
-			}
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mSeekBarValueMin = progress;
+            }
 
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                
+            }
 
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+                
+            }
+            
         });
-	}
+    }
 }

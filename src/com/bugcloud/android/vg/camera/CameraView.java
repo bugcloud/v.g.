@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,6 +23,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -33,7 +33,7 @@ import android.view.SurfaceHolder;
 
 public class CameraView extends CameraViewBase {
     private static final String TAG = "Vg::CameraView";
-    private String mCharset;
+    private int mLevel;
     private int mMinColorValue;
     private int mMaxColorValue;
     private boolean mNeedGlitch;
@@ -49,10 +49,12 @@ public class CameraView extends CameraViewBase {
     public CameraView(Context context) {
         super(context);
         mContext = context;
-        mCharset = ((BaseActivity)mContext).getStringSharedPreferences(Constants.KEY_NAME_CHARSET);
-        if (mCharset == null) mCharset = "ISO-8859-1";
+        mLevel = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL);
+        if (mLevel == 0) mLevel = 1;
         mMinColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
+        if (mMinColorValue > 9) mMinColorValue = 9;
+        if (mMaxColorValue > 9) mMaxColorValue = 9;
         mNeedGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
     }
     
@@ -72,18 +74,6 @@ public class CameraView extends CameraViewBase {
     
     @Override
     protected Bitmap processFrame(byte[] data) {
-        if (mNeedGlitch && (mMinColorValue < mMaxColorValue)) {
-            for (int i=0; i<(data.length * 0.5); i++) {
-                data[Common.getRandom(0, data.length-1)] = (byte)Common.getRandom(mMinColorValue, mMaxColorValue);
-            }
-            try {
-                String xx = new String(data, mCharset);
-                data = xx.getBytes(mCharset);
-            } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
         mYuv.put(0, 0, data);
         Imgproc.cvtColor(mYuv, mRgba, Imgproc.COLOR_YUV420sp2RGB, 4);
 //        if (mNeedGlitch) {
@@ -95,6 +85,15 @@ public class CameraView extends CameraViewBase {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bmp.compress(CompressFormat.JPEG, 100, bos);
             mBitmapBytes = bos.toByteArray();
+            
+            if (mNeedGlitch && (mMinColorValue < mMaxColorValue)) {
+//              int pad = "data:image/jpeg".getBytes().length;
+                for (int i=0; i<mLevel; i++) {
+                    mBitmapBytes[Common.getRandom(0, mBitmapBytes.length-1)] = (byte)Common.getRandom(mMinColorValue, mMaxColorValue);
+                }
+                bmp = BitmapFactory.decodeByteArray(mBitmapBytes, 0, mBitmapBytes.length);
+            }
+            
             return bmp;
         }
 
