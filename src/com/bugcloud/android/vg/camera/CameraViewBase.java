@@ -37,7 +37,8 @@ public abstract class CameraViewBase extends SurfaceView implements SurfaceHolde
         return mFrameHeight;
     }
     
-    public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
+    @Override
+	public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
         Log.i(TAG, "surfaceCreated");
         if (mCamera != null) {
             Camera.Parameters params = mCamera.getParameters();
@@ -68,11 +69,13 @@ public abstract class CameraViewBase extends SurfaceView implements SurfaceHolde
         }
     }
 
-    public void surfaceCreated(SurfaceHolder holder) {
+    @Override
+	public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "surfaceCreated");
         mCamera = Camera.open();
         mCamera.setPreviewCallback(new PreviewCallback() {
-            public void onPreviewFrame(byte[] data, Camera camera) {
+            @Override
+			public void onPreviewFrame(byte[] data, Camera camera) {
                 synchronized (CameraViewBase.this) {
                     mFrame = data;
                     CameraViewBase.this.notify();
@@ -82,7 +85,8 @@ public abstract class CameraViewBase extends SurfaceView implements SurfaceHolde
         (new Thread(this)).start();
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    @Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
         Log.i(TAG, "surfaceDestroyed");
         mThreadRun = false;
         if (mCamera != null) {
@@ -97,7 +101,8 @@ public abstract class CameraViewBase extends SurfaceView implements SurfaceHolde
 
     protected abstract Bitmap processFrame(byte[] data);
 
-    public void run() {
+    @Override
+	public void run() {
         mThreadRun = true;
         Log.i(TAG, "Starting processing thread");
         while (mThreadRun) {

@@ -27,6 +27,8 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -164,13 +166,13 @@ public class CameraView extends CameraViewBase {
         long now = System.currentTimeMillis();
         ContentResolver cr = mContext.getContentResolver();
         ContentValues values = new ContentValues(7);
-        values.put(Images.Media.TITLE, name);
-        values.put(Images.Media.DISPLAY_NAME, name);
-        values.put(Images.Media.DATE_TAKEN, now);
-        values.put(Images.Media.DATE_MODIFIED, now/1000);
-        values.put(Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(Images.Media.DATA, file.getPath());
-        values.put(Images.Media.SIZE, file.length());
+        values.put(MediaColumns.TITLE, name);
+        values.put(MediaColumns.DISPLAY_NAME, name);
+        values.put(ImageColumns.DATE_TAKEN, now);
+        values.put(MediaColumns.DATE_MODIFIED, now/1000);
+        values.put(MediaColumns.MIME_TYPE, "image/jpeg");
+        values.put(MediaColumns.DATA, file.getPath());
+        values.put(MediaColumns.SIZE, file.length());
         cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
     

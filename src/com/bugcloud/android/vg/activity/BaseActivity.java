@@ -5,6 +5,7 @@ import java.util.Map;
 import com.bugcloud.android.vg.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Gravity;
@@ -112,6 +113,6 @@ public class BaseActivity extends Activity {
 	}
 	
 	private SharedPreferences getSP() {
-		return this.getSharedPreferences(getString(R.string.preference_key_name), Activity.MODE_PRIVATE);
+		return this.getSharedPreferences(getString(R.string.preference_key_name), Context.MODE_PRIVATE);
 	}
 }
