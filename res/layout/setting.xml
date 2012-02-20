@@ -97,14 +97,14 @@
 	                 style="@style/CustomSeekBar" />
 	        </LinearLayout>
 	        <CheckBox
-	                    android:id="@+id/checkboxNeedGlitch"
+	                    android:id="@+id/checkboxLaughingMan"
 	                    android:background="@android:color/transparent"
 	                    android:layout_width="fill_parent"
 	                    android:layout_height="0dip"
 	                    android:layout_weight="1"
 	                    android:paddingLeft="40dip"
 	                    android:layout_marginLeft="22dip"
-	                    android:text="@string/setting_checkbox_need_glitch"
+	                    android:text="@string/setting_checkbox_laughing_man_glitch"
 	                    android:textColor="#3e3e3e"
 	                    android:textStyle="bold"/>
 	    </LinearLayout>

@@ -5,13 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
 
 import com.bugcloud.android.vg.R;
 import com.bugcloud.android.vg.activity.BaseActivity;
@@ -26,7 +33,6 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
@@ -38,7 +44,7 @@ public class CameraView extends CameraViewBase {
     private int mLevel;
     private int mMinColorValue;
     private int mMaxColorValue;
-    private boolean mNeedGlitch;
+    private boolean mLaughingManGlitch;
 
     private Context mContext;
     private byte[] mBitmapBytes;
@@ -47,6 +53,8 @@ public class CameraView extends CameraViewBase {
     private Mat mRgba;
     private Mat mGraySubmat;
     private Mat mIntermediateMat;
+    
+    private CascadeClassifier mCascade;
     
     public CameraView(Context context) {
         super(context);
@@ -57,7 +65,36 @@ public class CameraView extends CameraViewBase {
         mMaxColorValue = ((BaseActivity)mContext).getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         if (mMinColorValue > 9) mMinColorValue = 9;
         if (mMaxColorValue > 9) mMaxColorValue = 9;
-        mNeedGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
+        mLaughingManGlitch = ((BaseActivity)mContext).getBooleanSharedPreferences(Constants.KEY_NAME_LAUGHING_MAN);
+        
+        try {
+            InputStream is = context.getResources().openRawResource(R.raw.lbpcascade_frontalface);
+            File cascadeDir = context.getDir("cascade", Context.MODE_PRIVATE);
+            File cascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+            FileOutputStream os = new FileOutputStream(cascadeFile);
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            is.close();
+            os.close();
+
+            mCascade = new CascadeClassifier(cascadeFile.getAbsolutePath());
+            if (mCascade.empty()) {
+                Log.e(TAG, "Failed to load cascade classifier");
+                mCascade = null;
+            } else
+                Log.i(TAG, "Loaded cascade classifier from " + cascadeFile.getAbsolutePath());
+
+            cascadeFile.delete();
+            cascadeDir.delete();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
+        }
     }
     
     @Override
@@ -84,18 +121,31 @@ public class CameraView extends CameraViewBase {
         Bitmap bmp = Bitmap.createBitmap(getFrameWidth(), getFrameHeight(), Bitmap.Config.ARGB_8888);
 
         if (Utils.matToBitmap(mRgba, bmp)) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bmp.compress(CompressFormat.JPEG, 100, bos);
-            mBitmapBytes = bos.toByteArray();
-            
-            if (mNeedGlitch && (mMinColorValue < mMaxColorValue)) {
-//              int pad = "data:image/jpeg".getBytes().length;
+            if (mLaughingManGlitch) {
+                if (mCascade != null) {
+                    int height = mRgba.rows();
+                    int faceSize = Math.round(height * 0.1f);
+                    List<Rect> faces = new LinkedList<Rect>();
+                    mCascade.detectMultiScale(mRgba, faces, 1.1, 2, 2 // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                            , new Size(faceSize, faceSize));
+                    for (Rect r : faces) {
+                        Mat m = mRgba.submat(r);
+                        Core.randShuffle(m);
+                    }
+                }
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                Utils.matToBitmap(mRgba, bmp);
+                bmp.compress(CompressFormat.JPEG, 100, bos);
+                mBitmapBytes = bos.toByteArray();
+            } else if (mMinColorValue < mMaxColorValue) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bmp.compress(CompressFormat.JPEG, 100, bos);
+                mBitmapBytes = bos.toByteArray();
                 for (int i=0; i<mLevel; i++) {
                     mBitmapBytes[Common.getRandom(0, mBitmapBytes.length-1)] = (byte)Common.getRandom(mMinColorValue, mMaxColorValue);
                 }
                 bmp = BitmapFactory.decodeByteArray(mBitmapBytes, 0, mBitmapBytes.length);
             }
-            
             return bmp;
         }
 

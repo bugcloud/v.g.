@@ -15,11 +15,11 @@ public class SettingActivity extends BaseActivity {
     private SeekBar seekBarMax;
     private SeekBar seekBarMin;
     private Spinner mSpinner;
-    private CheckBox checkboxNeedGlitch;
+    private CheckBox checkboxLaughingMan;
     
     private int mSeekBarValueMax;
     private int mSeekBarValueMin;
-    private boolean mNeedMoreGlitch;
+    private boolean mLaughingManGlitch;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,19 +30,19 @@ public class SettingActivity extends BaseActivity {
         seekBarMax = (SeekBar) findViewById(R.id.seekBarMaxValue);
         seekBarMin = (SeekBar) findViewById(R.id.seekBarMinValue);
         mSpinner = (Spinner) findViewById(R.id.spinnerLevel);
-        checkboxNeedGlitch = (CheckBox) findViewById(R.id.checkboxNeedGlitch);
+        checkboxLaughingMan = (CheckBox) findViewById(R.id.checkboxLaughingMan);
         
         mSeekBarValueMax = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE);
         mSeekBarValueMin = getIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE);
         if (mSeekBarValueMax > 9) mSeekBarValueMax = 9;
         if (mSeekBarValueMin > 9) mSeekBarValueMin = 9;
-        mNeedMoreGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH);
+        mLaughingManGlitch = getBooleanSharedPreferences(Constants.KEY_NAME_LAUGHING_MAN);
         
         seekBarMax.setMax(9);
         seekBarMin.setMax(9);
         seekBarMax.setProgress(mSeekBarValueMax);
         seekBarMin.setProgress(mSeekBarValueMin);
-        checkboxNeedGlitch.setChecked(mNeedMoreGlitch);
+        checkboxLaughingMan.setChecked(mLaughingManGlitch);
         
         int level = getIntSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL);
         String[] levels = getResources().getStringArray(R.array.levels);
@@ -65,7 +65,7 @@ public class SettingActivity extends BaseActivity {
                 putIntSharedPreferences(Constants.KEY_NAME_GLITCH_LEVEL, (new Integer(mSpinner.getSelectedItem().toString())).intValue());
                 putIntSharedPreferences(Constants.KEY_NAME_COLOR_MAX_VALUE, mSeekBarValueMax);
                 putIntSharedPreferences(Constants.KEY_NAME_COLOR_MIN_VALUE, mSeekBarValueMin);
-                putBooleanSharedPreferences(Constants.KEY_NAME_NEED_GLITCH, checkboxNeedGlitch.isChecked());
+                putBooleanSharedPreferences(Constants.KEY_NAME_LAUGHING_MAN, checkboxLaughingMan.isChecked());
                 backToRoot();
             }
         });
