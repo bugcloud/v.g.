@@ -6,7 +6,7 @@
     <string name="setting_text_max">MAX</string>
     <string name="setting_text_min">MIN</string>
     <string name="setting_text_glitch_level">GLITCH LEVEL</string>
-    <string name="setting_checkbox_laughing_man_glitch">LAUGHTING MAN GLITCH</string>
+    <string name="setting_checkbox_laughing_man_glitch">LAUGHING MAN GLITCH</string>
     <string name="message_intro">Touch anywhere to save your display as a image.</string>
     <string name="message_picture_saved">Saved.</string>
     <string name="message_picture_not_saved">Failed to save.</string>
