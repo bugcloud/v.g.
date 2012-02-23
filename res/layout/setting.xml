@@ -7,9 +7,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="15dip"
-        android:paddingBottom="5dip">
+        android:layout_height="fill_parent">
 	    <LinearLayout
 	        android:orientation="vertical"
 	        android:layout_width="0dip"
@@ -21,8 +19,9 @@
                 android:layout_height="0dip"
                 android:layout_weight="1"
                 android:padding="2dip"
-                android:layout_marginTop="10dip"
+                android:layout_marginTop="25dip"
                 android:layout_marginBottom="10dip"
+                android:paddingBottom="5dip"
                 android:gravity="center">
                 <TextView
                        android:text="@string/setting_text_glitch_level"
@@ -115,13 +114,13 @@
             android:layout_height="fill_parent">
             <ImageButton
                         android:id="@+id/btnSaveSettings" 
-                        android:background="@android:color/transparent"
-                        android:layout_width="wrap_content" 
+                        android:background="@drawable/camera_button"
+                        android:layout_width="fill_parent" 
                         android:layout_height="0dip"
                         android:layout_weight="1"
                         android:padding="2dip"
                         android:src="@android:drawable/ic_menu_camera"
-                        android:layout_marginTop="5dip"
+                        android:layout_marginLeft="5dip"
                         android:layout_gravity="center"/>
         </LinearLayout>
 	</LinearLayout>

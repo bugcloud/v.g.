@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- PRESSED : FALSE -->
+    <!-- FOCUS   : FALSE -->
+    <item android:state_pressed="false"
+            android:state_focused="false">
+    <layer-list>
+        <item>
+            <shape
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:shape="rectangle">
+                    <gradient
+                        android:angle="270"
+                        android:startColor="#14141411"
+                        android:centerColor="#14141444"
+                        android:endColor="#14141411"
+                        android:type="linear" />
+                    <stroke
+                            android:width="0.5dip"
+                            android:color="#1a1a1a33"/>
+            </shape>
+        </item>
+    </layer-list>
+    </item>
+
+    <!-- PRESSED : FALSE -->
+    <!-- FOCUS   : TRUE -->
+    <item android:state_pressed="false"
+            android:state_focused="true">
+    <layer-list>
+        <item>
+            <shape
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:shape="rectangle">
+                    <gradient
+                        android:angle="270"
+                        android:startColor="#14141411"
+                        android:centerColor="#14141444"
+                        android:endColor="#14141411"
+                        android:type="linear" />
+                    <stroke
+                            android:width="0.5dip"
+                            android:color="#FF660033"/>
+            </shape>
+        </item>
+    </layer-list>
+    </item>
+
+    <!-- PRESSED : TRUE -->
+    <!-- FOCUS   : FALSE -->
+    <item android:state_pressed="true"
+            android:state_focused="false">
+    <layer-list>
+        <item>
+            <shape
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:shape="rectangle">
+                    <gradient
+                        android:angle="270"
+                        android:startColor="#11111133"
+                        android:centerColor="#111111ff"
+                        android:endColor="#11111133"
+                        android:type="linear" />
+                    <stroke
+                            android:width="0.5dip"
+                            android:color="#11111133"/>
+            </shape>
+        </item>
+    </layer-list>
+    </item>
+
+    <!-- PRESSED : TRUE -->
+    <!-- FOCUS   : TRUE -->
+    <item android:state_pressed="true"
+            android:state_focused="true">
+    <layer-list>
+        <item>
+            <shape
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:shape="rectangle">
+                    <gradient
+                        android:angle="270"
+                        android:startColor="#11111133"
+                        android:centerColor="#111111ff"
+                        android:endColor="#11111133"
+                        android:type="linear" />
+                    <stroke
+                            android:width="0.5dip"
+                            android:color="#11111133"/>
+            </shape>
+        </item>
+    </layer-list>
+    </item>
+
+</selector>
